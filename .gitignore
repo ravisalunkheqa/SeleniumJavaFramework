@@ -1,0 +1,93 @@
+# Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+*~
+
+# Allure
+.allure/
+allure-results/
+allure-report/
+
+# Python
+ai-analysis/venv/
+ai-analysis/__pycache__/
+ai-analysis/src/__pycache__/
+ai-analysis/config/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Python generated reports
+ai-analysis/test_report.html
+ai-analysis/data/*.db
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment & Secrets (NEVER commit these!)
+execution.env
+.env.local
+.env.*.local
+*.env
+
+# Cloud Testing Credentials
+browserstack.yml
+lambdatest.yml
+cloud-config.properties
+
+# Jenkins
+.jenkins/
+jenkins-workspace/
+
+# Test Results
+test-output/
+test-results/
+screenshots/
+videos/
+
+# Selenium
+*.png
+geckodriver.log
+chromedriver.log
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Node (if using any JS tools)
+node_modules/
+package-lock.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+
