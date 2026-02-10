@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Selenium POM Framework Test Suite" parallel="methods" thread-count="5">
+<!-- Enabled parallel execution at the methods level with a conservative thread count for local runs. -->
+<suite name="Selenium POM Framework Test Suite" parallel="methods" thread-count="1">
 
     <listeners>
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
@@ -16,4 +17,3 @@
     </test>
 
 </suite>
-

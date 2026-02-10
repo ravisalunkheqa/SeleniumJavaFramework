@@ -22,7 +22,8 @@ public class LoginTest extends BaseTest {
 
         @BeforeMethod
         public void initLoginPage() {
-                loginPage = new LoginPage(driver);
+                // Use thread-safe driver from BaseTest
+                loginPage = new LoginPage(getDriver());
         }
 
         @Test(priority = 1, description = "Verify successful login with valid credentials")
@@ -109,7 +110,7 @@ public class LoginTest extends BaseTest {
                                 "User should be on dashboard page");
 
                 // This assertion will intentionally FAIL to trigger screenshot capture
-                Assert.assertEquals(driver.getTitle(), "This Title Does Not Exist - Intentional Failure",
+                Assert.assertEquals(getDriver().getTitle(), "This Title Does Not Exist - Intentional Failure",
                                 "INTENTIONAL FAILURE: This test is designed to fail to verify screenshot capture works");
         }
 }

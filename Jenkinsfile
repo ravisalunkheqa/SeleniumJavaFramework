@@ -17,11 +17,6 @@ pipeline {
             defaultValue: 'testng.xml',
             description: 'TestNG suite file to execute'
         )
-        booleanParam(
-            name: 'GENERATE_AI_REPORT',
-            defaultValue: true,
-            description: 'Generate AI analysis report'
-        )
     }
 
     environment {
@@ -104,28 +99,6 @@ pipeline {
                     reportBuildPolicy: 'ALWAYS',
                     results: [[path: 'target/allure-results']]
                 ])
-            }
-        }
-
-        stage('AI Analysis') {
-            when {
-                expression { params.GENERATE_AI_REPORT == true }
-            }
-            steps {
-                script {
-                    sh '''
-                        cd ai-analysis
-                        python3 -m venv venv || true
-                        . venv/bin/activate
-                        pip install -r requirements.txt --quiet
-                        python report_generator.py -o ../target/ai-report.html
-                    '''
-                }
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'target/ai-report.html', allowEmptyArchive: true
-                }
             }
         }
     }

@@ -1,11 +1,10 @@
-# 🔬 AI-Powered Test Automation Framework
+# 🔬 Selenium Java Test Automation Framework
 
 [![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://openjdk.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-4.27-green.svg)](https://selenium.dev/)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **A comprehensive Selenium Java test automation framework with AI-powered failure analysis using local embeddings - no data leaves your machine!**
+> **A comprehensive Selenium Java test automation framework with Page Object Model, TestNG, and cloud platform integration.**
 
 **Author:** [Pramod Dutta](https://thetestingacademy.com)  
 **Website:** [The Testing Academy](https://thetestingacademy.com)
@@ -21,10 +20,7 @@
 - [Project Structure](#-project-structure)
 - [Step-by-Step Setup](#-step-by-step-setup)
 - [Running Tests](#-running-tests)
-- [AI Analysis Dashboard](#-ai-analysis-dashboard)
-- [How AI Similarity Search Works](#-how-ai-similarity-search-works)
 - [Configuration](#-configuration)
-- [API Reference](#-api-reference)
 - [Contributing](#-contributing)
 
 ---
@@ -37,7 +33,10 @@
 - ✅ **TestNG** - Powerful test framework with parallel execution support
 - ✅ **Allure Reporting** - Beautiful test reports with screenshots on failure
 - ✅ **Automatic Screenshots** - Captures screenshots, page source, and URL on test failure
-- ✅ **Structured Logging** - JSONL format logs for AI analysis
+- ✅ **Structured Logging** - Comprehensive logging for debugging
+
+### Cloud Testing Platforms
+- ☁️ *OpenTelemetry Integration** - Comprehensive observability and tracing
 
 ### Cloud Testing Platforms
 - ☁️ **BrowserStack Integration** - Run tests on 3000+ real browsers and devices
@@ -48,18 +47,7 @@
 ### CI/CD Integration
 - 🔧 **Jenkins Pipeline** - Ready-to-use Jenkinsfile with all stages
 - 📦 **Parameterized Builds** - Configure browser, environment, and test suite
-- 📊 **Allure Reports in Jenkins** - Integrated reporting with trend analysis
-- 🤖 **AI Report Generation** - Automatic AI analysis report in CI pipeline
-
-### AI Analysis Pipeline (Python)
-- 🧠 **Local AI Embeddings** - Sentence-Transformers running 100% locally
-- 🔍 **Semantic Similarity Search** - Find similar failures by meaning, not just keywords
-- 📊 **Interactive Dashboard** - Streamlit-based UI for visualizing test results
-- 🔒 **Privacy First** - No data leaves your machine, no external API calls
-- 📈 **Analytics** - Track failure patterns, test duration, and trends
-
----
-
+- 📊 **Allure Reports in Jenkins** - Integrated reporting with trend analysi
 <img width="3600" height="3972" alt="image" src="https://github.com/user-attachments/assets/ee4079b7-f789-4c6a-9df0-fc58762fcbb3" />
 
 
@@ -77,29 +65,9 @@
 │         │                                                           │
 │         ▼                                                           │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐          │
-│  │   Allure     │    │   JSONL      │    │  Screenshots │          │
-│  │   Reports    │    │   Logs       │    │  on Failure  │          │
+│  │   Allure     │    │  OpenTelemetry│   │  Screenshots │          │
+│  │   Reports    │    │   Tracing     │    │  on Failure  │          │
 │  └──────────────┘    └──────────────┘    └──────────────┘          │
-│                             │                                       │
-└─────────────────────────────┼───────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    AI ANALYSIS PIPELINE                             │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐          │
-│  │  Log Parser  │───▶│  Embeddings  │───▶│   Qdrant     │          │
-│  │  (Python)    │    │  (Local AI)  │    │ Vector Store │          │
-│  └──────────────┘    └──────────────┘    └──────────────┘          │
-│                                                 │                   │
-│                                                 ▼                   │
-│                      ┌──────────────────────────────────┐          │
-│                      │      Streamlit Dashboard         │          │
-│                      │  - Metrics & Charts              │          │
-│                      │  - Failure Analysis              │          │
-│                      │  - Similarity Search             │          │
-│                      └──────────────────────────────────┘          │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -112,7 +80,6 @@
 |-------------|---------|---------|
 | **Java JDK** | 17+ | Running Selenium tests |
 | **Maven** | 3.8+ | Build and dependency management |
-| **Python** | 3.9+ | AI analysis pipeline |
 | **Chrome/Firefox** | Latest | Browser for testing |
 
 ---
@@ -132,15 +99,6 @@ brew install openjdk@17
 
 # 4. View Allure report
 ./mvnw allure:serve
-
-# 5. Setup AI Analysis
-cd ai-analysis
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# 6. Launch Dashboard
-streamlit run dashboard.py
 ```
 
 ---
@@ -170,23 +128,8 @@ AIATBSeleniumJavaFramework/
 │       └── 📂 tests/               # Test classes
 │           └── LoginTest.java
 │
-├── 📂 ai-analysis/                 # AI Analysis Pipeline
-│   ├── 📄 requirements.txt         # Python dependencies
-│   ├── 📄 dashboard.py             # Streamlit dashboard
-│   ├── 📄 main.py                  # CLI entry point
-│   ├── 📂 config/
-│   │   └── settings.py             # Configuration
-│   └── 📂 src/
-│       ├── log_parser.py           # JSONL log parser
-│       ├── embedding_service.py    # Local AI embeddings
-│       ├── vector_store.py         # Qdrant vector database
-│       ├── analysis_service.py     # Analysis orchestration
-│       └── api.py                  # FastAPI REST API
-│
 └── 📂 target/                      # Build output
-    ├── 📂 allure-results/          # Allure report data
-    └── 📂 analytics-logs/          # JSONL test logs
-        └── test-events.jsonl
+    └── 📂 allure-results/          # Allure report data
 ```
 
 ---
@@ -280,58 +223,6 @@ This opens a beautiful HTML report showing:
 - 📄 Page source on failure
 - 🔗 URLs where tests failed
 
-### Step 5: Setup AI Analysis Pipeline
-
-```bash
-# Navigate to AI analysis directory
-cd ai-analysis
-
-# Create Python virtual environment
-python3 -m venv venv
-
-# Activate virtual environment
-# macOS/Linux:
-source venv/bin/activate
-# Windows:
-.\venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# First run downloads the AI model (~90MB, one-time)
-```
-
-### Step 6: Launch Dashboard
-
-```bash
-# Make sure you're in ai-analysis directory with venv activated
-cd ai-analysis
-source venv/bin/activate
-
-# Launch Streamlit dashboard
-streamlit run dashboard.py --server.port 8501
-```
-
-Open http://localhost:8501 in your browser.
-
-### Step 7: Use the REST API (Optional)
-
-```bash
-# Start API server
-python main.py serve
-
-# Index test logs
-curl -X POST http://localhost:8000/api/v1/index
-
-# Get summary
-curl http://localhost:8000/api/v1/summary
-
-# Find similar failures
-curl -X POST http://localhost:8000/api/v1/similar \
-  -H "Content-Type: application/json" \
-  -d '{"error_message": "Element not found"}'
-```
-
 ---
 
 ## 🧪 Running Tests
@@ -361,69 +252,7 @@ curl -X POST http://localhost:8000/api/v1/similar \
 |--------|----------|-------------|
 | Test Results | `target/surefire-reports/` | TestNG XML reports |
 | Allure Data | `target/allure-results/` | Allure report data |
-| Analytics Logs | `target/analytics-logs/test-events.jsonl` | JSONL for AI analysis |
 | Screenshots | `target/allure-results/*.png` | Failure screenshots |
-
----
-
-## 📊 AI Analysis Dashboard
-
-### Dashboard Pages
-
-| Page | Description |
-|------|-------------|
-| **📊 Dashboard** | Overview with pass/fail metrics, pie charts, duration analysis |
-| **📋 Test Events** | Full list of all test events with filters and CSV export |
-| **🔴 Failures** | Detailed failure view with error messages and stacktraces |
-| **🔍 Similar Search** | AI-powered semantic search for similar past failures |
-| **📈 Analytics** | Timeline visualization, failures by class, duration statistics |
-
-### Screenshots
-
-The dashboard provides:
-- Real-time test metrics
-- Interactive charts (Plotly)
-- Semantic similarity search
-- CSV export functionality
-- Failure pattern analysis
-
----
-
-## 🧠 How AI Similarity Search Works
-
-### The Problem with Traditional Search
-
-```
-Traditional Keyword Search:
-  "Connection timeout" ≠ "Network unavailable"  ❌ No match!
-
-AI Embedding Search:
-  "Connection timeout" ≈ "Network unavailable"  ✅ 85% similar!
-```
-
-### How Embeddings Work
-
-1. **Text → Vector**: Error messages are converted to 384-dimensional vectors
-2. **Semantic Meaning**: Similar meanings = similar vectors
-3. **Cosine Similarity**: Find closest matches in vector space
-
-```
-Error Message                          → Vector (384 numbers)
-─────────────────────────────────────────────────────────────
-"Element not found: login button"      → [0.23, -0.15, 0.87, ...]
-"Could not locate login button"        → [0.21, -0.14, 0.85, ...]  ← 92% Similar!
-"Database connection failed"           → [-0.45, 0.32, 0.11, ...]  ← Different
-```
-
-### Privacy: 100% Local
-
-| Component | Location | Data Sharing |
-|-----------|----------|--------------|
-| Sentence-Transformers | Local CPU | Model downloaded once, runs offline |
-| Qdrant Vector DB | In-memory | Data stays in RAM |
-| Dashboard | localhost | Never exposed externally |
-
-**No data leaves your machine!**
 
 ---
 
@@ -446,86 +275,6 @@ Error Message                          → Vector (384 numbers)
         </classes>
     </test>
 </suite>
-```
-
-### AI Analysis Configuration
-
-**ai-analysis/config/settings.py**:
-```python
-# Paths
-LOGS_PATH = "../target/analytics-logs/test-events.jsonl"
-
-# Embedding Model (runs locally)
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # 384 dimensions
-EMBEDDING_DIMENSION = 384
-
-# Vector Store
-QDRANT_COLLECTION = "test_failures"
-SIMILARITY_THRESHOLD = 0.3  # Minimum similarity score
-```
-
----
-
-## 🔌 API Reference
-
-### REST API Endpoints
-
-Base URL: `http://localhost:8000`
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Health check |
-| `/api/v1/health` | GET | Detailed health status |
-| `/api/v1/index` | POST | Load and index test logs |
-| `/api/v1/summary` | GET | Get failure summary |
-| `/api/v1/similar` | POST | Find similar failures |
-| `/api/v1/analyze` | POST | Analyze specific failure |
-
-### Example API Calls
-
-```bash
-# Health check
-curl http://localhost:8000/
-
-# Index logs
-curl -X POST http://localhost:8000/api/v1/index
-
-# Get summary
-curl http://localhost:8000/api/v1/summary
-
-# Find similar failures
-curl -X POST http://localhost:8000/api/v1/similar \
-  -H "Content-Type: application/json" \
-  -d '{
-    "error_message": "Element not found: login button",
-    "top_k": 5
-  }'
-```
-
-### API Response Examples
-
-**Index Response:**
-```json
-{
-  "status": "success",
-  "total_events": 10,
-  "failures_indexed": 1,
-  "passed": 4,
-  "failed": 1
-}
-```
-
-**Similar Failures Response:**
-```json
-[
-  {
-    "score": 0.85,
-    "test_name": "testLoginButton",
-    "class_name": "LoginTest",
-    "message": "Element not found: signin-btn",
-    "timestamp": "2024-01-15T10:30:00Z"
-  }
-]
 ```
 
 ---
@@ -587,7 +336,6 @@ The included `Jenkinsfile` provides a complete CI/CD pipeline:
 | `BROWSER` | chrome, firefox, edge | Browser for test execution |
 | `EXECUTION_ENV` | local, browserstack, lambdatest | Test execution environment |
 | `TEST_SUITE` | testng.xml | TestNG suite file |
-| `GENERATE_AI_REPORT` | true/false | Generate AI analysis report |
 
 ### Jenkins Setup
 
@@ -684,22 +432,6 @@ Both platforms are configured with:
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
----
-
-## 📄 Generate Beautiful HTML Report
-
-Generate a standalone HTML report with charts and failure details:
-
-```bash
-cd ai-analysis
-source venv/bin/activate
-python report_generator.py -o test_report.html
-```
-
-This generates a beautiful report with:
-- 📊 Pass/fail metrics with charts
-- 🔴 Detailed failure cards with stacktraces
 - ✅ Passed test summary
 - 🧠 AI analysis information
 
