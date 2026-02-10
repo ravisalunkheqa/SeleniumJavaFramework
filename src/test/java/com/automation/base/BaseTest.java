@@ -2,7 +2,7 @@ package com.automation.base;
 
 import com.automation.config.CloudConfig;
 import com.automation.config.CloudConfig.ExecutionEnv;
-import com.automation.utils.DriverTracker;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -98,8 +98,7 @@ public class BaseTest {
             default:
                 logger.info("Initializing local driver...");
                 setDriver(createLocalDriver(browser));
-                // Register the driver for robust cleanup
-                DriverTracker.register(Thread.currentThread().getId(), getDriver());
+                // DriverTracker removed: we rely on the ThreadLocal reference and explicit quit in tearDown
                 break;
         }
 
@@ -179,8 +178,8 @@ public class BaseTest {
         if (drv != null) {
             logger.info("Closing browser");
             try {
-                // Quit drivers registered for this thread (handles potential duplicates)
-                DriverTracker.quitAndRemove(Thread.currentThread().getId());
+                // Directly quit the WebDriver instance for this thread
+                drv.quit();
             } catch (Exception e) {
                 logger.warn("Error while quitting driver: " + e.getMessage());
             }
