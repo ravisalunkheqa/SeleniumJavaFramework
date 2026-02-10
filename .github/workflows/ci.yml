@@ -39,9 +39,17 @@ jobs:
 
       - name: Run Maven tests
         # keep tests verbose and non-interactive; set a reasonable heap size
-        run: mvn -B -V -DskipTests=false test
+        id: mvn-test
+        run: mvn -B -V -DskipTests=false -Dheadless=true test
         env:
           MAVEN_OPTS: -Xmx2G
+
+      - name: Upload ChromeDriver logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromedriver-logs
+          path: target/chromedriver-*.log
 
       - name: Upload Allure results (always)
         if: always()
