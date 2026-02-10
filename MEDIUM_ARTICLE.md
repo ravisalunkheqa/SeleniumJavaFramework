@@ -1,6 +1,6 @@
-# Build an AI-Powered Test Automation Framework That Keeps Your Data Private
+# Build a Test Automation Framework That Keeps Your Data Private
 
-## How I Built a Selenium Java Framework with Local AI Failure Analysis — No Cloud APIs Required
+## How I Built a Selenium Java Framework with Local Failure Analysis — No Cloud APIs Required
 
 ![Header Image](https://miro.medium.com/max/1400/placeholder-header.png)
 
@@ -12,7 +12,7 @@ Have you ever spent hours debugging a failing test, only to realize you've seen 
 
 I've been there. With test suites growing to hundreds or thousands of tests, tracking failure patterns becomes a nightmare. Traditional approaches like exact text matching or regex patterns just don't scale.
 
-That's why I built an **AI-powered test failure analysis system** that runs **100% locally** on your machine. No OpenAI. No cloud APIs. No data leakage. Just smart, semantic search for your test failures.
+That's why I built a test failure analysis system that runs **100% locally** on your machine. No cloud APIs. No data leakage. Just smart, semantic search for your test failures.
 
 In this article, I'll show you exactly how I built it — and how you can too.
 
@@ -39,13 +39,13 @@ To a human, these are clearly the same issue. But to traditional text search? Co
 | **Exact text match** | "login button" ≠ "sign-in button" ❌ |
 | **Regex patterns** | Maintenance nightmare, always incomplete |
 | **Manual review** | Time-consuming, doesn't scale |
-| **Cloud AI (OpenAI/Claude)** | Privacy concerns, costs, rate limits |
+| **Cloud analysis (OpenAI/Claude)** | Privacy concerns, costs, rate limits |
 
-What if we could have AI understand the **meaning** behind error messages, but keep everything local?
+What if we could have embeddings understand the **meaning** behind error messages, but keep everything local?
 
 ---
 
-## 💡 The Solution: Local AI Embeddings
+## 💡 The Solution: Local Embeddings
 
 Here's the architecture I designed:
 
@@ -86,7 +86,7 @@ The complete framework consists of two parts:
 - Allure for beautiful reports with screenshots
 - **Custom listener that logs test events to JSONL**
 
-### Part 2: Python AI Analysis Pipeline
+### Part 2: Python Analysis Pipeline
 - JSONL log parser
 - Sentence-Transformers for local embeddings
 - Qdrant vector database (in-memory)
@@ -131,13 +131,13 @@ public class TestAnalyticsListener implements ITestListener {
             throwable.getMessage() : "Unknown error";
         String stacktrace = getStackTrace(throwable);
         
-        // Log structured data for AI analysis
+        // Log structured data for analysis
         analyticsLogger.logTestFailure(
             testId,
             result.getMethod().getMethodName(),
             result.getTestClass().getName(),
             duration,
-            errorMessage,  // ← This gets embedded by AI
+            errorMessage,  // ← This gets embedded for similarity search
             stacktrace
         );
     }
@@ -159,11 +159,11 @@ Why JSONL? It's:
 
 ---
 
-## 🧠 Part 2: The AI Analysis Pipeline
+## 🧠 Part 2: The Analysis Pipeline
 
 ### The Embedding Service
 
-This is where AI enters the picture. We use `sentence-transformers` to convert error messages into vectors:
+This is where embeddings enter the picture. We use `sentence-transformers` to convert error messages into vectors:
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -234,7 +234,7 @@ The dashboard provides a beautiful UI for exploring test results:
 ```python
 import streamlit as st
 
-st.title("🔬 AI Test Failure Analysis")
+st.title("🔬 Test Failure Analysis")
 
 # Sidebar navigation
 page = st.sidebar.selectbox("Navigate", [
@@ -265,7 +265,7 @@ if page == "🔍 Similar Search":
 | **📊 Dashboard** | Pass/fail rates, pie charts, recent failures |
 | **📋 Test Events** | Full event log with filters, CSV export |
 | **🔴 Failures** | Detailed failure cards with stacktraces |
-| **🔍 Similar Search** | AI semantic search for past failures |
+| **🔍 Similar Search** | semantic search for past failures |
 | **📈 Analytics** | Timeline trends, duration statistics |
 
 ---
@@ -282,14 +282,14 @@ if page == "🔍 Similar Search":
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/PramodDutta/AIATBSeleniumJavaFramework.git
-cd AIATBSeleniumJavaFramework
+git clone https://github.com/PramodDutta/SeleniumJavaFramework.git
+cd SeleniumJavaFramework
 
 # 2. Run Java tests (generates JSONL logs)
 ./mvnw clean test
 
 # 3. Setup Python environment
-cd ai-analysis
+cd analysis
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -384,7 +384,7 @@ pipeline {
     stages {
         stage('Run Tests') { /* ... */ }
         stage('Generate Allure Report') { /* ... */ }
-        stage('AI Analysis') { /* ... */ }
+        stage('Analysis') { /* ... */ }
     }
 }
 ```
@@ -392,7 +392,7 @@ pipeline {
 The pipeline automatically:
 1. Runs tests on your chosen environment
 2. Generates Allure reports with trends
-3. Creates AI analysis reports
+3. Creates analysis reports
 4. Archives all artifacts
 
 ---
@@ -419,19 +419,19 @@ The complete framework is available on GitHub:
 It includes:
 - ✅ Full Java Selenium framework with Page Object Model
 - ✅ Allure reporting with screenshots on failure
-- ✅ Python AI analysis pipeline
+- ✅ Python analysis pipeline
 - ✅ Streamlit dashboard
 - ✅ REST API
 - ✅ **Jenkinsfile for CI/CD**
 - ✅ **BrowserStack & LambdaTest support**
 - ✅ Comprehensive documentation
-- ✅ `context.yaml` for AI-assisted recreation
+- ✅ `context.yaml` for assisted recreation
 
 ---
 
 ## 🏁 Conclusion
 
-You don't need expensive cloud AI APIs to get intelligent test failure analysis. With local embeddings:
+You don't need expensive cloud APIs to get intelligent test failure analysis. With local embeddings:
 
 - **Privacy** — Your test data never leaves your machine
 - **Speed** — No API latency, instant results
@@ -456,5 +456,4 @@ Give it a try on your next test automation project. I'd love to hear how it work
 
 ---
 
-**Tags:** #TestAutomation #AI #Selenium #Java #Python #MachineLearning #QA #SoftwareTesting #DevOps #Privacy
-
+**Tags:** #TestAutomation #Selenium #Java #Python #MachineLearning #QA #SoftwareTesting #DevOps #Privacy

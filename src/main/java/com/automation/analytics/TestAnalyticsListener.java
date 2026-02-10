@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TestNG Listener that captures test lifecycle events and emits
- * structured JSON logs for AI-powered test analysis pipeline.
+ * structured JSON logs for the analysis pipeline.
  */
 public class TestAnalyticsListener implements ITestListener {
 
@@ -138,4 +138,3 @@ public class TestAnalyticsListener implements ITestListener {
         return sw.toString();
     }
 }
-

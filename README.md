@@ -6,8 +6,7 @@
 
 > **A comprehensive Selenium Java test automation framework with Page Object Model, TestNG, and cloud platform integration.**
 
-**Author:** [Pramod Dutta](https://thetestingacademy.com)  
-**Website:** [The Testing Academy](https://thetestingacademy.com)
+**Author:** [Ravi](https://thetestingacademy.com)  
 
 ---
 
@@ -324,7 +323,7 @@ The included `Jenkinsfile` provides a complete CI/CD pipeline:
 
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Checkout   │───▶│    Build    │───▶│  Run Tests  │───▶│   Allure    │───▶│ AI Analysis │
+│  Checkout   │───▶│    Build    │───▶│  Run Tests  │───▶│   Allure    │───▶│ Analysis │
 │             │    │   Compile   │    │  (Params)   │    │   Report    │    │   Report    │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
 ```
@@ -373,7 +372,7 @@ The included `Jenkinsfile` provides a complete CI/CD pipeline:
 # Or use Jenkins UI to customize:
 # - Browser: chrome/firefox/edge
 # - Environment: local/browserstack/lambdatest
-# - AI Report: enabled/disabled
+# - Analysis Report: enabled/disabled
 ```
 
 ---
@@ -433,7 +432,7 @@ Both platforms are configured with:
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 - ✅ Passed test summary
-- 🧠 AI analysis information
+- 🧠 analysis information
 
 ---
 
@@ -442,7 +441,7 @@ Both platforms are configured with:
 The `context.yaml` file contains all the information needed to recreate this project. Use it as:
 
 1. **Reference** - Understand the project structure and components
-2. **AI Context** - Provide to AI assistants to understand the project
+2. **Context** - Provide to tools or assistants to understand the project
 3. **Documentation** - Quick overview of all technologies and configurations
 
 ```yaml
@@ -483,4 +482,3 @@ If you find this project useful, please consider giving it a star! ⭐
 </p>
 
 <img width="3600" height="2954" alt="image" src="https://github.com/user-attachments/assets/bec7ac92-225e-4592-a980-d07fc60878c5" />
-

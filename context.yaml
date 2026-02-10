@@ -1,17 +1,17 @@
 # =============================================================================
-# AI-Powered Test Automation Framework - Context Configuration
+# Test Automation Framework - Context Configuration
 # =============================================================================
 # Author: Pramod Dutta
 # Website: The Testing Academy (https://thetestingacademy.com)
 # 
 # This file contains all the context needed to recreate this project.
-# Use this as a reference or provide it to AI assistants to understand
+# Use this as a reference or provide it to assistants/tools to understand
 # the project structure and requirements.
 # =============================================================================
 
 project:
-  name: "AI-Powered Test Automation Framework"
-  description: "Selenium Java test automation with AI-powered failure analysis using local embeddings"
+  name: "Test Automation Framework"
+  description: "Selenium Java test automation with structured failure analysis"
   author: "Pramod Dutta"
   website: "https://thetestingacademy.com"
   repository: "https://github.com/pramods12/AIATBSeleniumJavaFramework"
@@ -59,7 +59,7 @@ structure:
     - path: "src/main/java/com/automation/analytics/"
       description: "Test analytics and logging"
       files:
-        - "TestAnalyticsLogger.java - JSONL structured logging for AI analysis"
+        - "TestAnalyticsLogger.java - JSONL structured logging for analysis"
         - "TestAnalyticsListener.java - TestNG listener for analytics"
         
     - path: "src/test/java/com/automation/base/"
@@ -72,26 +72,26 @@ structure:
       files:
         - "LoginTest.java - Login functionality tests"
 
-  ai_analysis:
-    - path: "ai-analysis/config/"
+  analysis:
+    - path: "analysis/config/"
       description: "Configuration"
       files:
         - "settings.py - Paths, model config, thresholds"
         
-    - path: "ai-analysis/src/"
-      description: "Core AI analysis modules"
+    - path: "analysis/src/"
+      description: "Core analysis modules"
       files:
         - "log_parser.py - Parses JSONL test logs"
-        - "embedding_service.py - Local AI embeddings (sentence-transformers)"
-        - "vector_store.py - Qdrant vector database operations"
+        - "embedding_service.py - Embeddings-related utilities"
+        - "vector_store.py - Vector database operations"
         - "analysis_service.py - Orchestrates analysis pipeline"
-        - "api.py - FastAPI REST endpoints"
-        
-    - path: "ai-analysis/"
+        - "api.py - REST endpoints"
+
+    - path: "analysis/"
       description: "Entry points"
       files:
         - "main.py - CLI entry point"
-        - "dashboard.py - Streamlit dashboard"
+        - "dashboard.py - Optional dashboard"
         - "requirements.txt - Python dependencies"
 
 # =============================================================================
@@ -107,7 +107,7 @@ features:
       implementation: "AllureScreenshotListener using ITestListener"
       
     - name: "Structured Logging"
-      description: "JSONL format logs for AI analysis"
+      description: "JSONL format logs for analysis"
       format: "One JSON object per line with test events"
       fields:
         - "timestamp"
@@ -121,28 +121,19 @@ features:
     - name: "Allure Reporting"
       description: "Rich HTML reports with attachments"
       
-  ai_analysis:
-    - name: "Local AI Embeddings"
-      description: "Sentence-Transformers running 100% locally"
-      model: "all-MiniLM-L6-v2"
-      dimensions: 384
-      privacy: "No data leaves machine"
-      
+  analysis:
+    - name: "Local Embeddings (optional)"
+      description: "Embeddings support can be enabled if required"
+      note: "Optional component; disabled by default"
+
     - name: "Semantic Similarity Search"
       description: "Find similar failures by meaning, not keywords"
-      algorithm: "Cosine similarity on embeddings"
-      
+
     - name: "Vector Database"
-      description: "Qdrant in-memory for fast similarity search"
-      
+      description: "Optional vector DB for similarity search"
+
     - name: "Interactive Dashboard"
-      description: "Streamlit UI with metrics, charts, search"
-      pages:
-        - "Dashboard - Overview metrics and charts"
-        - "Test Events - Full event list with filters"
-        - "Failures - Detailed failure analysis"
-        - "Similar Search - AI-powered similarity search"
-        - "Analytics - Trends and statistics"
+      description: "Optional UI with metrics, charts, search"
 
 # =============================================================================
 # COMMANDS
@@ -151,17 +142,17 @@ commands:
   setup:
     install_java_mac: "brew install openjdk@17"
     install_java_ubuntu: "sudo apt install openjdk-17-jdk"
-    setup_python_venv: "cd ai-analysis && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
-    
+    setup_python_venv: "cd analysis && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+
   run_tests:
     all_tests: "./mvnw clean test"
     specific_class: "./mvnw test -Dtest=LoginTest"
     with_allure: "./mvnw clean test allure:serve"
     
-  ai_analysis:
-    start_dashboard: "cd ai-analysis && source venv/bin/activate && streamlit run dashboard.py"
-    start_api: "cd ai-analysis && source venv/bin/activate && python main.py serve"
-    run_analysis: "cd ai-analysis && source venv/bin/activate && python main.py analyze"
+  analysis:
+    start_dashboard: "cd analysis && source venv/bin/activate && streamlit run dashboard.py"
+    start_api: "cd analysis && source venv/bin/activate && python main.py serve"
+    run_analysis: "cd analysis && source venv/bin/activate && python main.py analyze"
 
 # =============================================================================
 # TEST SITE
@@ -174,4 +165,3 @@ test_site:
   pages:
     login: "/practice-test-login/"
     dashboard: "/logged-in-successfully/"
-

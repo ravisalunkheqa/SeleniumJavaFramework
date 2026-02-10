@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Structured log event model for AI-powered test analysis.
- * Compatible with LogAI pipeline and OpenTelemetry format.
+ * Structured log event model for test analysis.
+ * Compatible with logging pipelines and OpenTelemetry format.
  */
 public class TestLogEvent {
 
@@ -130,4 +130,3 @@ public class TestLogEvent {
     public long getDurationMs() { return durationMs; }
     public Map<String, String> getAttributes() { return attributes; }
 }
-
