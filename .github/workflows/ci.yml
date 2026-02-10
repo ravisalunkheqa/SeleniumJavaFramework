@@ -11,7 +11,7 @@ jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     strategy:
       matrix:
         java-version: [17]
@@ -37,6 +37,22 @@ jobs:
           java -version
           mvn -v
 
+      - name: Ensure Google Chrome is installed
+        run: |
+          if ! command -v google-chrome >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y wget gnupg2
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+          fi
+
+      - name: Print Chrome & chromedriver versions
+        run: |
+          echo "Chrome version: $(google-chrome --version || true)"
+          echo "Chromedriver (Selenium-managed) info will be visible in logs if used by Selenium"
+
       - name: Run Maven tests
         # keep tests verbose and non-interactive; set a reasonable heap size
         id: mvn-test
@@ -44,12 +60,24 @@ jobs:
         env:
           MAVEN_OPTS: -Xmx2G
 
-      - name: Upload ChromeDriver logs (on failure)
-        if: failure()
+      - name: Upload ChromeDriver logs (always)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: chromedriver-logs
           path: target/chromedriver-*.log
+
+      - name: Print ChromeDriver logs on failure
+        if: failure()
+        run: |
+          echo "======= BEGIN chromedriver logs ======="
+          for f in target/chromedriver-*.log; do
+            if [ -f "$f" ]; then
+              echo "-- LOG: $f --"
+              tail -n +1 "$f" || true
+            fi
+          done
+          echo "======= END chromedriver logs ======="
 
       - name: Upload Allure results (always)
         if: always()
