@@ -1,0 +1,64 @@
+name: LambdaTest CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch: {}
+
+jobs:
+  lambdatest-build:
+    name: Run Selenium tests on LambdaTest
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      matrix:
+        java-version: [17]
+
+    env:
+      LAMBDATEST_USERNAME: ${{ secrets.LAMBDATEST_USERNAME }}
+      LAMBDATEST_ACCESS_KEY: ${{ secrets.LAMBDATEST_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Show Java & Maven
+        run: |
+          java -version
+          mvn -v
+
+      - name: Run Selenium TestNG tests on LambdaTest
+        run: mvn -B -V test -Dexecution.env=lambdatest -Dbrowser=chrome
+        env:
+          MAVEN_OPTS: -Xmx2G
+          LAMBDATEST_USERNAME: ${{ secrets.LAMBDATEST_USERNAME }}
+          LAMBDATEST_ACCESS_KEY: ${{ secrets.LAMBDATEST_ACCESS_KEY }}
+
+      - name: Upload TestNG results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-results
+          path: target/surefire-reports/testng-results.xml
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
