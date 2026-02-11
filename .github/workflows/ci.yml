@@ -5,90 +5,59 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: {}
 
 jobs:
   build:
-    name: Build and test
     runs-on: ubuntu-latest
-    timeout-minutes: 40
-    strategy:
-      matrix:
-        java-version: [17]
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java-version }}
           distribution: temurin
+          java-version: '21'
+          cache: maven
 
-      - name: Cache local Maven repository
-        uses: actions/cache@v4
+      - name: Set up Node.js (for Allure CLI)
+        uses: actions/setup-node@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          node-version: '18'
 
-      - name: Show Java & Maven
-        run: |
-          java -version
-          mvn -v
-
-      - name: Ensure Google Chrome is installed
-        run: |
-          if ! command -v google-chrome >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y wget gnupg2
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-          fi
-
-      - name: Print Chrome & chromedriver versions
-        run: |
-          echo "Chrome version: $(google-chrome --version || true)"
-          echo "Chromedriver (Selenium-managed) info will be visible in logs if used by Selenium"
+      - name: Install Allure CLI
+        run: npm install -g @shelex/allure-commandline --no-audit --no-fund
 
       - name: Run Maven tests
-        # keep tests verbose and non-interactive; set a reasonable heap size
-        id: mvn-test
-        run: mvn -B -V -DskipTests=false -Dheadless=true test
-        env:
-          MAVEN_OPTS: -Xmx2G
+        run: mvn -B -V -Dheadless=true test
 
-      - name: Upload ChromeDriver logs (always)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: chromedriver-logs
-          path: target/chromedriver-*.log
-
-      - name: Print ChromeDriver logs on failure
-        if: failure()
+      - name: Generate Allure HTML report
         run: |
-          echo "======= BEGIN chromedriver logs ======="
-          for f in target/chromedriver-*.log; do
-            if [ -f "$f" ]; then
-              echo "-- LOG: $f --"
-              tail -n +1 "$f" || true
-            fi
-          done
-          echo "======= END chromedriver logs ======="
+          echo "Looking for allure results in target/allure-results"
+          if [ -d "target/allure-results" ]; then
+            echo "Generating Allure report..."
+            allure generate target/allure-results --clean -o target/allure-report
+            echo "Allure report generated at target/allure-report"
+          else
+            echo "No allure results found at target/allure-results"
+            ls -la target || true
+            exit 0
+          fi
 
-      - name: Upload Allure results (always)
-        if: always()
+      - name: Upload Allure report as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
-          path: target/allure-results
+          name: allure-report
+          path: target/allure-report
+          retention-days: 5
 
-      - name: Upload Surefire reports (always)
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload Allure report for GitHub Pages (main branch only)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: surefire-reports
-          path: target/surefire-reports
+          path: target/allure-report
+
+      - name: Deploy to GitHub Pages (main branch only)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/deploy-pages@v1
