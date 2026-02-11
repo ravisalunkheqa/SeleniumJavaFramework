@@ -19,6 +19,7 @@ jobs:
     env:
       LAMBDATEST_USERNAME: ${{ secrets.LAMBDATEST_USERNAME }}
       LAMBDATEST_ACCESS_KEY: ${{ secrets.LAMBDATEST_ACCESS_KEY }}
+      MAVEN_OPTS: -Xmx2G
 
     steps:
       - name: Checkout
@@ -44,10 +45,6 @@ jobs:
 
       - name: Run Selenium TestNG tests on LambdaTest
         run: mvn -B -V test -Dexecution.env=lambdatest -Dbrowser=chrome
-        env:
-          MAVEN_OPTS: -Xmx2G
-          LAMBDATEST_USERNAME: ${{ secrets.LAMBDATEST_USERNAME }}
-          LAMBDATEST_ACCESS_KEY: ${{ secrets.LAMBDATEST_ACCESS_KEY }}
 
       - name: Upload TestNG results
         if: always()
