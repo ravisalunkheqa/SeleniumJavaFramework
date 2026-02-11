@@ -115,13 +115,13 @@ jobs:
 
       - name: Upload Pages artifact (Allure)
         if: always()
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: target/allure-report
 
       - name: Deploy to GitHub Pages (Allure)
         if: always()
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
         with:
           branch: gh-pages
           folder: target/allure-report
