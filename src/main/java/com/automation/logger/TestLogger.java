@@ -1,6 +1,5 @@
-package com.automation.analytics;
+package com.automation.logger;
 
-import com.automation.analytics.model.TestLogEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -16,19 +15,19 @@ import java.nio.file.StandardOpenOption;
  * Logger service that emits structured JSON logs for the analysis pipeline.
  * Outputs JSONL format compatible with logging collectors and observability tools.
  */
-public class TestAnalyticsLogger {
+public class TestLogger {
 
-    private static final Logger logger = LogManager.getLogger(TestAnalyticsLogger.class);
+    private static final Logger logger = LogManager.getLogger(TestLogger.class);
     private static final String DEFAULT_LOG_DIR = "target/analytics-logs";
     private static final String LOG_FILE_NAME = "test-events.jsonl";
 
-    private static TestAnalyticsLogger instance;
+    private static TestLogger instance;
     private final Gson gson;
     private final Path logFilePath;
     private final String environment;
     private final String serviceName;
 
-    private TestAnalyticsLogger() {
+    private TestLogger() {
         this.gson = new GsonBuilder()
                 .disableHtmlEscaping()
                 .create();
@@ -37,9 +36,9 @@ public class TestAnalyticsLogger {
         this.logFilePath = initLogFile();
     }
 
-    public static synchronized TestAnalyticsLogger getInstance() {
+    public static synchronized TestLogger getInstance() {
         if (instance == null) {
-            instance = new TestAnalyticsLogger();
+            instance = new TestLogger();
         }
         return instance;
     }

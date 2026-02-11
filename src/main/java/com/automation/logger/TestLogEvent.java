@@ -1,4 +1,4 @@
-package com.automation.analytics.model;
+package com.automation.logger;
 
 import java.time.Instant;
 import java.util.HashMap;

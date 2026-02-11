@@ -1,5 +1,6 @@
-package com.automation.analytics;
+package com.automation.listeners;
 
+import com.automation.logger.TestLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
@@ -15,17 +16,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * TestNG Listener that captures test lifecycle events and emits
  * structured JSON logs for the analysis pipeline.
  */
-public class TestAnalyticsListener implements ITestListener {
+public class TestListener implements ITestListener {
 
-    private static final Logger logger = LogManager.getLogger(TestAnalyticsListener.class);
-    private final TestAnalyticsLogger analyticsLogger;
+    private static final Logger logger = LogManager.getLogger(TestListener.class);
+    private final TestLogger testLogger;
     private final Map<String, Long> testStartTimes;
 
-    public TestAnalyticsListener() {
-        this.analyticsLogger = TestAnalyticsLogger.getInstance();
+    public TestListener() {
+        this.testLogger = TestLogger.getInstance();
         this.testStartTimes = new ConcurrentHashMap<>();
-        logger.info("TestAnalyticsListener initialized - logging to: " + 
-                    analyticsLogger.getLogFilePath());
+        logger.info("TestListener initialized - logging to: " +
+                    testLogger.getLogFilePath());
     }
 
     @Override
@@ -33,7 +34,7 @@ public class TestAnalyticsListener implements ITestListener {
         String testId = generateTestId(result);
         testStartTimes.put(testId, System.currentTimeMillis());
         
-        analyticsLogger.logTestStart(
+        testLogger.logTestStart(
                 testId,
                 result.getMethod().getMethodName(),
                 result.getTestContext().getName(),
@@ -48,7 +49,7 @@ public class TestAnalyticsListener implements ITestListener {
         String testId = generateTestId(result);
         long duration = calculateDuration(testId);
         
-        analyticsLogger.logTestSuccess(
+        testLogger.logTestSuccess(
                 testId,
                 result.getMethod().getMethodName(),
                 result.getTestContext().getName(),
@@ -69,7 +70,7 @@ public class TestAnalyticsListener implements ITestListener {
         String errorMessage = throwable != null ? throwable.getMessage() : "Unknown error";
         String stacktrace = throwable != null ? getStackTrace(throwable) : "";
         
-        analyticsLogger.logTestFailure(
+        testLogger.logTestFailure(
                 testId,
                 result.getMethod().getMethodName(),
                 result.getTestContext().getName(),
@@ -90,7 +91,7 @@ public class TestAnalyticsListener implements ITestListener {
         Throwable throwable = result.getThrowable();
         String reason = throwable != null ? throwable.getMessage() : "Test skipped";
         
-        analyticsLogger.logTestSkipped(
+        testLogger.logTestSkipped(
                 testId,
                 result.getMethod().getMethodName(),
                 result.getTestContext().getName(),
@@ -114,7 +115,7 @@ public class TestAnalyticsListener implements ITestListener {
                     " | Skipped: " + context.getSkippedTests().size());
         
         logger.info("Analytics logs available at: " + 
-                    analyticsLogger.getLogFilePath().toAbsolutePath());
+                    testLogger.getLogFilePath().toAbsolutePath());
     }
 
     private String generateTestId(ITestResult result) {

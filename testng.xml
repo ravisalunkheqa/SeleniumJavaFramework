@@ -6,7 +6,7 @@
     <listeners>
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
         <listener class-name="com.automation.listeners.AllureScreenshotListener"/>
-        <listener class-name="com.automation.analytics.TestAnalyticsListener"/>
+        <listener class-name="com.automation.listeners.TestListener"/>
     </listeners>
 
     <test name="Login Tests - Chrome">
