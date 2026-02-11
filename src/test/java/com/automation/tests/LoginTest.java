@@ -100,7 +100,7 @@ public class LoginTest extends BaseTest {
                 logger.info("Logout test completed successfully");
         }
 
-        @Test(priority = 5, description = "Intentional failure test to verify screenshot capture", enabled = false)
+        @Test(priority = 5, description = "Intentional failure test to verify screenshot capture", enabled = true)
         @Severity(SeverityLevel.MINOR)
         @Story("Screenshot Test")
         @Description("This test intentionally fails to verify that screenshot is captured on failure")
