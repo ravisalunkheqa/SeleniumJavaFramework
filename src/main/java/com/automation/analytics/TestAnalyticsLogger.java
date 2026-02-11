@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
- * Logger service that emits structured JSON logs for AI analysis pipeline.
- * Outputs JSONL format compatible with LogAI and OpenTelemetry collectors.
+ * Logger service that emits structured JSON logs for the analysis pipeline.
+ * Outputs JSONL format compatible with logging collectors and observability tools.
  */
 public class TestAnalyticsLogger {
 
@@ -58,7 +58,7 @@ public class TestAnalyticsLogger {
     }
 
     /**
-     * Log a test event in JSONL format for AI analysis pipeline.
+     * Log a test event in JSONL format for the analysis pipeline.
      */
     public void logEvent(TestLogEvent event) {
         String jsonLine = gson.toJson(event);
@@ -111,7 +111,7 @@ public class TestAnalyticsLogger {
     }
 
     /**
-     * Log test failure event with stacktrace for AI analysis.
+     * Log test failure event with stacktrace for analysis.
      */
     public void logTestFailure(String testId, String testName, String suite,
             String className, long durationMs,

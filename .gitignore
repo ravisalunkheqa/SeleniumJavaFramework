@@ -26,10 +26,10 @@ allure-results/
 allure-report/
 
 # Python
-ai-analysis/venv/
-ai-analysis/__pycache__/
-ai-analysis/src/__pycache__/
-ai-analysis/config/__pycache__/
+analysis/venv/
+analysis/__pycache__/
+analysis/src/__pycache__/
+analysis/config/__pycache__/
 *.pyc
 *.pyo
 *.pyd
@@ -37,8 +37,8 @@ ai-analysis/config/__pycache__/
 *.so
 
 # Python generated reports
-ai-analysis/test_report.html
-ai-analysis/data/*.db
+analysis/test_report.html
+analysis/data/*.db
 
 # OS
 .DS_Store
@@ -90,4 +90,3 @@ temp/
 *.tmp
 *.temp
 *.bak
-

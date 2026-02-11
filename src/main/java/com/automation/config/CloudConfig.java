@@ -66,7 +66,7 @@ public class CloudConfig {
         browserstackOptions.put("os", "Windows");
         browserstackOptions.put("osVersion", "11");
         browserstackOptions.put("browserVersion", "latest");
-        browserstackOptions.put("projectName", "AI Test Automation Framework");
+        browserstackOptions.put("projectName", "Test Automation Framework");
         browserstackOptions.put("buildName", getBuildName());
         browserstackOptions.put("sessionName", testName);
         browserstackOptions.put("local", "false");
@@ -101,7 +101,7 @@ public class CloudConfig {
         Map<String, Object> ltOptions = new HashMap<>();
         ltOptions.put("platform", "Windows 11");
         ltOptions.put("browserVersion", "latest");
-        ltOptions.put("project", "AI Test Automation Framework");
+        ltOptions.put("project", "Test Automation Framework");
         ltOptions.put("build", getBuildName());
         ltOptions.put("name", testName);
         ltOptions.put("selenium_version", "4.27.0");
@@ -181,4 +181,3 @@ public class CloudConfig {
         }
     }
 }
-
