@@ -2,11 +2,16 @@ package com.automation.base;
 
 import com.automation.config.CloudConfig;
 import com.automation.config.CloudConfig.ExecutionEnv;
+<<<<<<< HEAD
 import com.automation.utils.DriverTracker;
+=======
+
+>>>>>>> f38fccd8b81b1c1bbcb286640aaec35426793bfc
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -17,6 +22,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.time.Duration;
@@ -98,8 +105,12 @@ public class BaseTest {
             default:
                 logger.info("Initializing local driver...");
                 setDriver(createLocalDriver(browser));
+<<<<<<< HEAD
                 // Register the driver for robust cleanup
                 DriverTracker.register(Thread.currentThread().getId(), getDriver());
+=======
+                // DriverTracker removed: we rely on the ThreadLocal reference and explicit quit in tearDown
+>>>>>>> f38fccd8b81b1c1bbcb286640aaec35426793bfc
                 break;
         }
 
@@ -129,15 +140,45 @@ public class BaseTest {
                 chromeOptions.addArguments("--disable-infobars");
 
                 // Headless mode for CI or when explicitly requested
-                if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
+                // Enable headless if explicitly requested or if running in CI (no display available)
+                boolean headlessRequested = Boolean.parseBoolean(System.getProperty("headless", "false")) || isCiEnvironment();
+                if (headlessRequested) {
                     chromeOptions.addArguments("--headless=new");
                     chromeOptions.addArguments("--window-size=1920,1080");
                 }
-                return new ChromeDriver(chromeOptions);
+
+                // Ensure target directory exists so we can write logs
+                File targetDir = new File("target");
+                if (!targetDir.exists()) {
+                    boolean created = targetDir.mkdirs();
+                    if (!created) {
+                        logger.warn("Could not create target directory for logs: {}", targetDir.getAbsolutePath());
+                    }
+                }
+
+                // Create a per-thread ChromeDriver log file under target/
+                File chromeLog = new File(targetDir, "chromedriver-" + Thread.currentThread().getId() + ".log");
+
+                // Try to create a ChromeDriverService that writes verbose logs to the file.
+                // If creating the service fails, fall back to the no-service constructor.
+                ChromeDriverService service;
+                try {
+                    service = new ChromeDriverService.Builder()
+                            .usingAnyFreePort()
+                            .withLogFile(chromeLog)
+                            .withVerbose(true)
+                            .build();
+                    return new ChromeDriver(service, chromeOptions);
+                } catch (Exception e) {
+                    // Some Selenium versions may throw unchecked exceptions here; log and fall back
+                    logger.warn("Could not create ChromeDriverService for verbose logging: {}", e.getMessage());
+                    return new ChromeDriver(chromeOptions);
+                }
 
             case "firefox":
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
-                if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
+                // Mirror Chrome behaviour for headless selection
+                if (Boolean.parseBoolean(System.getProperty("headless", "false")) || isCiEnvironment()) {
                     firefoxOptions.addArguments("--headless");
                 }
                 return new FirefoxDriver(firefoxOptions);
@@ -149,6 +190,23 @@ public class BaseTest {
                 logger.warn("Browser '{}' not supported, defaulting to Chrome", browser);
                 return new ChromeDriver();
         }
+    }
+
+    // Detect common CI environments (GitHub Actions, generic CI) to auto-enable headless mode when needed.
+    private boolean isCiEnvironment() {
+        try {
+            String gh = System.getenv("GITHUB_ACTIONS");
+            if (gh != null && gh.equalsIgnoreCase("true")) {
+                return true;
+            }
+            String ci = System.getenv("CI");
+            if (ci != null && ci.equalsIgnoreCase("true")) {
+                return true;
+            }
+        } catch (Exception e) {
+            // safely ignore any security manager issues accessing env
+        }
+        return false;
     }
 
     @AfterMethod
@@ -179,8 +237,13 @@ public class BaseTest {
         if (drv != null) {
             logger.info("Closing browser");
             try {
+<<<<<<< HEAD
                 // Quit drivers registered for this thread (handles potential duplicates)
                 DriverTracker.quitAndRemove(Thread.currentThread().getId());
+=======
+                // Directly quit the WebDriver instance for this thread
+                drv.quit();
+>>>>>>> f38fccd8b81b1c1bbcb286640aaec35426793bfc
             } catch (Exception e) {
                 logger.warn("Error while quitting driver: " + e.getMessage());
             }

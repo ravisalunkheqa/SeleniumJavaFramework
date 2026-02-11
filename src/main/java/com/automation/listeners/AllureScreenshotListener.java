@@ -24,7 +24,7 @@ public class AllureScreenshotListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.info("Test failed: " + result.getName() + " - Capturing screenshot for Allure");
-        
+ /*
         WebDriver driver = getDriverFromTestClass(result);
         if (driver != null) {
             captureScreenshot(driver, result.getName());
@@ -33,6 +33,8 @@ public class AllureScreenshotListener implements ITestListener {
         } else {
             logger.warn("Could not get WebDriver instance for screenshot capture");
         }
+
+  */
     }
 
     @Override
