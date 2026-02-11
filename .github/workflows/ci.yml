@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
   workflow_dispatch: {}
 
 jobs:
@@ -37,22 +37,6 @@ jobs:
           java -version
           mvn -v
 
-      - name: Ensure Google Chrome is installed
-        run: |
-          if ! command -v google-chrome >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y wget gnupg2
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-          fi
-
-      - name: Print Chrome & chromedriver versions
-        run: |
-          echo "Chrome version: $(google-chrome --version || true)"
-          echo "Chromedriver (Selenium-managed) info will be visible in logs if used by Selenium"
-
       - name: Run Maven tests
         # keep tests verbose and non-interactive; set a reasonable heap size
         id: mvn-test
@@ -60,34 +44,26 @@ jobs:
         env:
           MAVEN_OPTS: -Xmx2G
 
-      - name: Upload ChromeDriver logs (always)
+      # Check whether allure-results exists and is non-empty; set output results_exist
+      - name: Check Allure results
+        id: check-results
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: chromedriver-logs
-          path: target/chromedriver-*.log
-
-      - name: Print ChromeDriver logs on failure
-        if: failure()
         run: |
-          echo "======= BEGIN chromedriver logs ======="
-          for f in target/chromedriver-*.log; do
-            if [ -f "$f" ]; then
-              echo "-- LOG: $f --"
-              tail -n +1 "$f" || true
-            fi
-          done
-          echo "======= END chromedriver logs ======="
+          if [ -d target/allure-results ] && [ "$(ls -A target/allure-results)" ]; then
+            echo "results_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "results_exist=false" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Upload Allure results (always)
-        if: always()
+      - name: Upload Allure results
+        if: steps.check-results.outputs.results_exist == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: target/allure-results
 
       - name: Install Allure commandline
-        if: always()
+        if: steps.check-results.outputs.results_exist == 'true'
         run: |
           ALLURE_VERSION=2.21.0
           wget -qO /tmp/allure.tgz https://github.com/allure-framework/allure2/releases/download/$ALLURE_VERSION/allure-$ALLURE_VERSION.tgz
@@ -96,32 +72,37 @@ jobs:
           allure --version
 
       - name: Generate Allure HTML report
-        if: always()
+        id: generate-report
+        if: steps.check-results.outputs.results_exist == 'true'
         run: |
           if [ -d target/allure-results ] && [ "$(ls -A target/allure-results)" ]; then
             mkdir -p target/allure-report
             allure generate target/allure-results -o target/allure-report --clean || true
-            echo "Allure report generated at target/allure-report"
+            if [ -d target/allure-report ] && [ "$(ls -A target/allure-report)" ]; then
+              echo "report_exists=true" >> $GITHUB_OUTPUT
+            else
+              echo "report_exists=false" >> $GITHUB_OUTPUT
+            fi
+            echo "Allure report generation attempted"
           else
+            echo "report_exists=false" >> $GITHUB_OUTPUT
             echo "No Allure results found at target/allure-results; skipping report generation"
           fi
 
-      - name: Upload Allure HTML report (always)
-        if: always()
+      - name: Upload Allure HTML report
+        if: steps.generate-report.outputs.report_exists == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: allure-html
           path: target/allure-report
 
       - name: Upload Pages artifact (Allure)
-        if: always()
+        if: steps.generate-report.outputs.report_exists == 'true'
         uses: actions/upload-pages-artifact@v1
         with:
           path: target/allure-report
 
       - name: Deploy to GitHub Pages (Allure)
-        if: always()
+        if: github.ref == 'refs/heads/master' && steps.generate-report.outputs.report_exists == 'true' && success()
         uses: actions/deploy-pages@v1
-        with:
-          branch: gh-pages
-          folder: target/allure-report
+        # note: the deploy-pages action reads the uploaded pages artifact; no additional 'with' inputs are required
